@@ -1,0 +1,91 @@
+/* Markdown Preview Styles */
+.wmde-markdown {
+  background-color: transparent !important;
+  color: #E5E3D4 !important;
+}
+
+.wmde-markdown pre {
+  background-color: #252525 !important;
+  border: 1px solid #6A669D40 !important;
+}
+
+.wmde-markdown code {
+  color: #9ABF80 !important;
+  background-color: #6A669D20 !important;
+  padding: 0.2em 0.4em !important;
+  border-radius: 3px !important;
+}
+
+.wmde-markdown blockquote {
+  border-left: 4px solid #9ABF80 !important;
+  background-color: #6A669D10 !important;
+  padding: 1rem !important;
+  color: #E5E3D4CC !important;
+}
+
+.wmde-markdown h1,
+.wmde-markdown h2,
+.wmde-markdown h3,
+.wmde-markdown h4,
+.wmde-markdown h5,
+.wmde-markdown h6 {
+  color: #E5E3D4 !important;
+  border-bottom: 1px solid #6A669D40 !important;
+}
+
+.wmde-markdown hr {
+  border-color: #6A669D40 !important;
+}
+
+.wmde-markdown table {
+  border-color: #6A669D40 !important;
+}
+
+.wmde-markdown th {
+  background-color: #252525 !important;
+  color: #E5E3D4 !important;
+  border-color: #6A669D40 !important;
+}
+
+.wmde-markdown td {
+  border-color: #6A669D40 !important;
+  color: #E5E3D4CC !important;
+}
+
+.wmde-markdown a {
+  color: #9ABF80 !important;
+}
+
+[data-color-mode="dark"] {
+  --color-canvas-default: transparent !important;
+  --color-canvas-subtle: #252525 !important;
+}
+
+/* MDEditor Dark Theme */
+.w-md-editor {
+  background-color: #252525 !important;
+}
+
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  color: #E5E3D4 !important;
+  background-color: transparent !important;
+}
+
+.w-md-editor-toolbar {
+  background-color: #1C325B !important;
+  border-color: #6A669D40 !important;
+}
+
+.w-md-editor-toolbar button {
+  color: #E5E3D4 !important;
+}
+
+.w-md-editor-toolbar button:hover {
+  background-color: #6A669D30 !important;
+}
+
+[data-color-mode="dark"] .wmde-markdown-color {
+  background-color: transparent !important;
+  color: #E5E3D4 !important;
+}
