@@ -103,14 +103,15 @@ const AddProject = () => {
             const response = await axios.post('http://localhost:5000/project/add', projectData);
 
             if (response.data) {
-                alert('Project added successfully!');
+                toast.success('Project added successfully!');
                 resetForm();
                 setSelectedImages([]);
                 setSelectedVideos([]);
             }
         } catch (error) {
             console.error('Error details:', error.response?.data || error.message);
-            alert(error.response?.data?.message || 'Failed to add project. Please try again.');
+            // alert(error.response?.data?.message || 'Failed to add project. Please try again.');
+            toast.error('failed to add project. Please try again.');
         } finally {
             setLoading(false);
             setSubmitting(false);

@@ -23,7 +23,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-gradient-to-r from-[#272727] to-[#2A3F6C] border-b border-[#6A669D]/20">
+    <nav className="bg-gradient-to-r from-[#9ABF80] to-[#000000] border-b border-[#6A669D]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo Section */}

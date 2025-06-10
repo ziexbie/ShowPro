@@ -104,12 +104,13 @@ const UpdateProject = () => {
             const response = await axios.put(`http://localhost:5000/project/update/${id}`, projectData);
 
             if (response.data) {
-                alert('Project updated successfully!');
+                
+                toast.success('Project updated successfully!');
                 navigate('/manage-projects');
             }
         } catch (error) {
             console.error('Error details:', error);
-            alert('Failed to update project. Please try again.');
+            toast.error('Failed to update project. Please try again.');
         } finally {
             setLoading(false);
             setSubmitting(false);
