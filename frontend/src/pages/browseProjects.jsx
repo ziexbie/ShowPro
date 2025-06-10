@@ -10,6 +10,7 @@ const Browse = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTypes, setSelectedTypes] = useState([]); // Changed to array
+  const [selectedTechStacks, setSelectedTechStacks] = useState([]); // New state for selected tech stacks
 
   const projectTypes = [
     'Web Development',
@@ -18,6 +19,24 @@ const Browse = () => {
     'Machine Learning',
     'Data Science',
     'Other'
+  ];
+
+  const techStacks = [
+    { name: 'MERN', color: '#61DAFB' },
+    { name: 'Django', color: '#092E20' },
+    { name: 'Java', color: '#F89820' },
+    { name: 'Python', color: '#FFD43B' },
+    { name: 'React', color: '#61DAFB' },
+    { name: 'Node.js', color: '#339933' },
+    { name: 'Angular', color: '#DD0031' },
+    { name: 'Vue.js', color: '#4FC08D' },
+    { name: 'PHP', color: '#777BB4' },
+    { name: 'Laravel', color: '#FF2D20' },
+    { name: 'Flutter', color: '#02569B' },
+    { name: 'React Native', color: '#61DAFB' },
+    { name: '.NET', color: '#512BD4' },
+    { name: 'Spring Boot', color: '#6DB33F' },
+    { name: 'MongoDB', color: '#47A248' },
   ];
 
   // Random spotlight colors for cards
@@ -52,8 +71,17 @@ const Browse = () => {
     );
   };
 
+  const handleTechStackToggle = (tech) => {
+    setSelectedTechStacks(prev => 
+      prev.includes(tech)
+        ? prev.filter(t => t !== tech)
+        : [...prev, tech]
+    );
+  };
+
   const clearFilters = () => {
     setSelectedTypes([]);
+    setSelectedTechStacks([]);
     setSearchTerm('');
   };
 
@@ -61,7 +89,11 @@ const Browse = () => {
     const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          project.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = selectedTypes.length === 0 || selectedTypes.includes(project.type);
-    return matchesSearch && matchesType;
+    const matchesTechStack = selectedTechStacks.length === 0 || 
+                            project.techStack?.split(',').some(tech => 
+                              selectedTechStacks.includes(tech.trim())
+                            );
+    return matchesSearch && matchesType && matchesTechStack;
   });
 
   const handleViewProject = (projectId) => {
@@ -71,6 +103,10 @@ const Browse = () => {
   const handleCategorySelect = (type) => {
     navigate(`/category/${encodeURIComponent(type)}`);
   };
+
+  useEffect(() => {
+    console.log('Projects:', projects);
+  }, [projects]);
 
   return (
     <div className='browseContainer'>
@@ -102,49 +138,46 @@ const Browse = () => {
                 <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 
                                  text-[#E5E3D4]/50 w-4 h-4" />
               </div>
-              {/* Category Dropdown */}
-              {/* <div className="relative group">
-                <button className="px-4 py-2 rounded-lg bg-[#6A669D]/20 
-                                 text-[#E5E3D4] hover:bg-[#6A669D]/30 
-                                 transition-colors flex items-center gap-2">
-                  Browse by Category
-                  <FiChevronDown className="w-4 h-4 transition-transform 
-                                          group-hover:transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute right-0 mt-2 w-56 rounded-lg bg-[#1C325B] 
-                              border border-[#6A669D]/20 shadow-xl opacity-0 
-                              invisible group-hover:opacity-100 group-hover:visible 
-                              transition-all duration-300 z-50">
+
+              {/* Project Types and Tech Stack Filters */}
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex flex-wrap gap-2">
                   {projectTypes.map(type => (
                     <button
                       key={type}
-                      onClick={() => handleCategorySelect(type)}
-                      className="w-full px-4 py-2 text-left text-[#E5E3D4] 
-                               hover:bg-[#6A669D]/20 first:rounded-t-lg 
-                               last:rounded-b-lg transition-colors"
+                      onClick={() => handleTypeToggle(type)}
+                      className={`px-4 py-2 rounded-full transition-all duration-300 
+                                ${selectedTypes.includes(type)
+                                  ? 'bg-[#181818] text-black font-medium'
+                                  : 'bg-[#6A669D]/20 text-[#E5E3D4] hover:bg-[#6A669D]/30'
+                                }`}
                     >
                       {type}
                     </button>
                   ))}
                 </div>
-              </div> */}
 
-              {/* Category Filter Pills */}
-              <div className="flex flex-wrap gap-2">
-                {projectTypes.map(type => (
-                  <button
-                    key={type}
-                    onClick={() => handleTypeToggle(type)}
-                    className={`px-4 py-2 rounded-full transition-all duration-300 
-                              ${selectedTypes.includes(type)
-                                ? 'bg-[#9ABF80] text-black font-medium'
-                                : 'bg-[#6A669D]/20 text-[#E5E3D4] hover:bg-[#6A669D]/30'
-                              }`}
+                {/* Tech Stacks - Replaced dropdown with buttons */}
+                <div className="flex items-center gap-2">
+                  <select
+                    value={selectedTechStacks}
+                    onChange={(e) => setSelectedTechStacks(e.target.value ? [e.target.value] : [])}
+                    className="px-4 py-2 rounded-lg bg-[#6A669D]/10 
+                              border border-[#6A669D]/30 text-[#999945] 
+                              focus:outline-none focus:border-[#9ABF80]/50 
+                              transition-colors cursor-pointer"
                   >
-                    {type}
-                  </button>
-                ))}
-                {(selectedTypes.length > 0 || searchTerm) && (
+                    <option value="" className='bg-[#252525] text-[#E5E3D4]'>All Tech Stacks</option>
+                    {techStacks.map(tech => (
+                      <option key={tech.name} value={tech.name}>
+                        {tech.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Clear Filters Button */}
+                {(selectedTypes.length > 0 || selectedTechStacks.length > 0) && (
                   <button
                     onClick={clearFilters}
                     className="px-4 py-2 rounded-full bg-red-500/20 text-red-400 
@@ -156,23 +189,6 @@ const Browse = () => {
                   </button>
                 )}
               </div>
-
-              {/* Active Filters Display */}
-              {selectedTypes.length > 0 && (
-                <div className="flex items-center gap-2 text-[#E5E3D4]/70 text-sm">
-                  <span>Active Filters:</span>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedTypes.map(type => (
-                      <span
-                        key={type}
-                        className="px-2 py-1 rounded-full bg-[#9ABF80]/20 text-[#9ABF80]"
-                      >
-                        {type}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -191,49 +207,79 @@ const Browse = () => {
                 </div>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-max">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredProjects.map((project, index) => (
                   <SpotlightCard
                     key={project._id}
                     spotlightColor={spotlightColors[index % spotlightColors.length]}
-                    className="bg-[#252525] p-6 rounded-xl border border-[#6A669D]/20 h-full"
+                    className="bg-[#252525] p-4 rounded-xl border border-[#6A669D]/20 h-full 
+                                transition-all duration-300"
                   >
                     <div className="flex flex-col h-full">
+                      {/* Image with overlay gradient */}
                       {project.images?.[0] && (
-                        <div className="aspect-video mb-4 rounded-lg overflow-hidden">
+                        <div className="relative aspect-video mb-4 rounded-lg overflow-hidden group">
                           <img
                             src={project.images[0]}
                             alt={project.title}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-300 
+                                     group-hover:scale-105"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                         </div>
                       )}
-                      <h2 className="text-[#E5E3D4] text-xl font-bold mb-2">{project.title}</h2>
-                      <p className="text-[#E5E3D4]/70 mb-4 line-clamp-2 flex-grow">
-                        {project.description}
-                      </p>
                       
-                      <div className="flex flex-col space-y-3 mt-auto">
-                        <button
-                          onClick={() => handleViewProject(project._id)}
-                          className="w-full py-3 px-4 bg-[#E5E3D4] hover:bg-[#383563]/90 
-                                    text-black font-semibold rounded-lg transition-all duration-300 
-                                    flex items-center justify-center space-x-2 group"
-                        >
-                          <FiEye className="w-5 h-5" />
-                          <span>View Details</span>
-                        </button>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="px-3 py-1 rounded-full bg-[#6A669D]/20 text-[#9ABF80] text-sm">
+                      {/* Content */}
+                      <div className="flex-1 flex flex-col">
+                        {/* Title and Description */}
+                        <h2 className="text-[#E5E3D4] text-lg font-bold mb-2 line-clamp-1">
+                          {project.title}
+                        </h2>
+                        <p className="text-[#E5E3D4]/70 text-sm mb-4 line-clamp-2">
+                          {project.description}
+                        </p>
+
+                        {/* Tags Row */}
+                        <div className="flex flex-wrap items-center gap-2 mb-4">
+                          <span className="px-2 py-1 rounded-full bg-[#6A669D]/20 
+                                            text-[#9ABF80] text-xs font-medium">
                             {project.type}
                           </span>
+                          {project.techStack && project.techStack.split(',').map((tech, idx) => {
+                            const techInfo = techStacks.find(t => t.name === tech.trim());
+                            return (
+                              <span
+                                key={idx}
+                                className="px-2 py-1 rounded-full text-xs font-medium"
+                                style={{
+                                  backgroundColor: techInfo ? `${techInfo.color}15` : '#6A669D20',
+                                  color: techInfo ? techInfo.color : '#9ABF80'
+                                }}
+                              >
+                                {tech.trim()}
+                              </span>
+                            );
+                          })}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="mt-auto flex items-center justify-between gap-2">
+                          <button
+                            onClick={() => handleViewProject(project._id)}
+                            className="flex-1 py-2 px-3 bg-[#E5E3D4] hover:bg-[#9ABF80]
+                                     text-black text-sm font-medium rounded-lg transition-all 
+                                     duration-300 flex items-center justify-center gap-1"
+                          >
+                            <FiEye className="w-4 h-4" />
+                            <span>View</span>
+                          </button>
+                          
                           {project.githubLink && (
                             <a
                               href={project.githubLink}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-2 rounded-full bg-[#6A669D]/20 hover:bg-[#6A669D]/30 
+                              className="p-2 rounded-lg bg-[#6A669D]/20 hover:bg-[#6A669D]/30 
                                        text-[#E5E3D4]/70 hover:text-[#9ABF80] transition-colors"
                             >
                               <FiLink className="w-4 h-4" />

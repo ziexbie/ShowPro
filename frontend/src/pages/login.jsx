@@ -27,13 +27,21 @@ const Login = () => {
                 const response = await axios.post('http://localhost:5000/user/authenticate', values);
 
                 if (response.data && response.data.token) {
+                    const user = response.data.user;
+                    
+                    // Check if user is admin
+                    if (user.role !== 'admin') {
+                        toast.error('Access denied. Admin access only.');
+                        return;
+                    }
+
                     localStorage.setItem('token', response.data.token);
-                    localStorage.setItem('user', JSON.stringify(response.data.user));
-                    toast.success('Welcome back!');
+                    localStorage.setItem('user', JSON.stringify(user));
+                    toast.success('Welcome back, Admin!');
                     navigate('/browse-projects');
                 }
             } catch (error) {
-                toast.error('Invalid email or password');
+                toast.error(error.response?.data?.message || 'Invalid credentials');
             } finally {
                 setSubmitting(false);
             }

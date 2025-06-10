@@ -26,6 +26,10 @@ const validationSchema = Yup.object({
     videos: Yup.array()
         .of(Yup.mixed())
         .nullable(),
+    techStack: Yup.string()
+        .min(1, 'Select at least one tech stack')
+        .required('Tech stack is required'),
+    
 });
 
 const AddProject = () => {
@@ -71,6 +75,14 @@ const AddProject = () => {
         try {
             setLoading(true);
 
+            // Process tech stack
+            let finalTechStack = values.techStack;
+            if (values.techStack.includes('Other') && values.customTechStack) {
+                finalTechStack = finalTechStack
+                    .filter(tech => tech !== 'Other')
+                    .concat(values.customTechStack);
+            }
+
             // Upload all images
             const imageUrls = values.images?.length > 0 
                 ? await uploadToCloudinary(values.images)
@@ -83,6 +95,7 @@ const AddProject = () => {
 
             const projectData = {
                 ...values,
+                techStack: finalTechStack,
                 images: imageUrls,
                 videos: videoUrls
             };
@@ -124,6 +137,13 @@ const AddProject = () => {
         'Machine Learning',
         'Data Science',
         'Other'
+    ];
+
+    const techStacks = [
+        { name: 'MERN' }, { name: 'Django' }, { name: 'Java' }, { name: 'Python' }, 
+        { name: 'React' }, { name: 'Node.js' }, { name: 'Angular' }, { name: 'Vue.js' }, 
+        { name: 'PHP' }, { name: 'Laravel' }, { name: 'Flutter' }, { name: 'React Native' }, 
+        { name: '.NET' }, { name: 'Spring Boot' }, { name: 'MongoDB' }
     ];
 
     const renderFilePreview = (files, type) => {
@@ -206,13 +226,15 @@ const AddProject = () => {
                         area: '',
                         githubLink: '',
                         liveLink: '',
+                        techStack: '',
+                        
                         images: [],
                         videos: []
                     }}
                     validationSchema={validationSchema}
                     onSubmit={handleSubmit}
                 >
-                    {({ errors, touched, setFieldValue }) => (
+                    {({ errors, touched, setFieldValue, values }) => (
                         <Form className="p-8 space-y-6 bg-[#252525]">
                             {/* Title */}
                             <div>
@@ -221,7 +243,7 @@ const AddProject = () => {
                                 </label>
                                 <Field
                                     name="title"
-                                    className="w-full px-4 py-2 rounded-lg border bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
+                                    className="w-full text-gray-300 px-4 py-2 rounded-lg border bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
                                     placeholder="Enter project title"
                                 />
                                 {errors.title && touched.title && (
@@ -239,7 +261,7 @@ const AddProject = () => {
                                     name="description"
                                     rows={6}
                                     className="w-full px-4 py-2 rounded-lg border bg-[#3e3e3e] 
-                                             focus:outline-none focus:border-[#A7D2CB] resize-none"
+                                             focus:outline-none text-gray-300 focus:border-[#A7D2CB] resize-none"
                                     placeholder="Enter project description"
                                 />
                                 {errors.description && touched.description && (
@@ -255,7 +277,7 @@ const AddProject = () => {
                                 <Field
                                     as="select"
                                     name="type"
-                                    className="w-full px-4 py-2 rounded-lg border text-gray-400 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
+                                    className="w-full px-4 py-2 rounded-lg border text-gray-300 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
                                 >
                                     <option value="">Select Type</option>
                                     {projectTypes.map(type => (
@@ -274,7 +296,7 @@ const AddProject = () => {
                                 </label>
                                 <Field
                                     name="area"
-                                    className="w-full px-4 py-2 rounded-lg border bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
+                                    className="w-full px-4 py-2 rounded-lg border text-gray-300 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
                                     placeholder="e.g., Frontend, Backend, Full Stack"
                                 />
                                 {errors.area && touched.area && (
@@ -290,7 +312,7 @@ const AddProject = () => {
                                     </label>
                                     <Field
                                         name="githubLink"
-                                        className="w-full px-4 py-2 rounded-lg border bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
+                                        className="w-full px-4 py-2 rounded-lg border text-gray-300 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
                                         placeholder="GitHub repository URL"
                                     />
                                     {errors.githubLink && touched.githubLink && (
@@ -303,13 +325,31 @@ const AddProject = () => {
                                     </label>
                                     <Field
                                         name="liveLink"
-                                        className="w-full px-4 py-2 rounded-lg border bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
+                                        className="w-full px-4 py-2 rounded-lg border text-gray-300 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
                                         placeholder="Live project URL"
                                     />
                                     {errors.liveLink && touched.liveLink && (
                                         <div className="text-red-500 text-sm mt-1">{errors.liveLink}</div>
                                     )}
                                 </div>
+                            </div>
+
+                            {/* Tech Stack */}
+                            <div>
+                                <label className="block text-gray-100 text-sm font-semibold mb-2">
+                                    Tech Stack
+                                </label>
+                                <Field
+                                    name="techStack"
+                                    className="w-full px-4 py-2 rounded-lg border text-gray-300 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
+                                    placeholder="e.g., MERN, React, Node.js (comma-separated)"
+                                />
+                                <p className="text-[#E5E3D4]/50 text-xs mt-1">
+                                    Add multiple tech stacks separated by commas
+                                </p>
+                                {errors.techStack && touched.techStack && (
+                                    <div className="text-red-500 text-sm mt-1">{errors.techStack}</div>
+                                )}
                             </div>
 
                             {/* File Uploads */}

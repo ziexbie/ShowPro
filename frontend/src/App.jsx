@@ -9,6 +9,7 @@ import ViewProject from './pages/viewProject';
 import CategoryWise from './pages/categoryWise';
 import BrowseByCategory from './pages/BrowseByCategory';
 import Login from './pages/login';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import './App.css';
 
@@ -21,9 +22,9 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<BrowseByCategory />} />
-        <Route path="/manage-projects" element={<ManageProjects />} />
-        <Route path="/add-project" element={<AddProject />} />
-        <Route path="/update-project/:id" element={<UpdateProject />} />
+        <Route path="/manage-projects" element={<ProtectedRoute><ManageProjects></ManageProjects></ProtectedRoute>} />
+        <Route path="/add-project" element={<ProtectedRoute><AddProject/></ProtectedRoute>} />
+        <Route path="/update-project/:id" element={<ProtectedRoute><UpdateProject></UpdateProject></ProtectedRoute>} />
         <Route path="/browse-projects" element={<Browse />} />
         <Route path="/view-project/:id" element={<ViewProject />} />
         <Route path="/categories" element={<BrowseByCategory />} />

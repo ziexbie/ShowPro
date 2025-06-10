@@ -7,6 +7,7 @@ const projectSchema = new mongoose.Schema({
   area: String,     
   githubLink: String,
   liveLink: String,
+  techStack: String,
   images: [String], 
   videos: [String], 
 }, { timestamps: true });

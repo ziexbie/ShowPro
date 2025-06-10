@@ -193,7 +193,7 @@ const ViewProject = () => {
         </div>
 
         {/* Media Carousel */}
-        <div className="bg-[#6A669D]/10 border-2 border-gray-600 rounded-xl p-8">
+        <div className="bg-[#6A669D]/10 border-2 border-gray-600 rounded-xl p-8 space-y-6">
           <div className="flex gap-4 mb-6">
             <button
               onClick={() => switchMediaType('image')}
@@ -268,6 +268,47 @@ const ViewProject = () => {
             {mediaType === 'video' && project.videos?.length > 0 && (
               `Video ${currentMediaIndex + 1} of ${project.videos.length}`
             )}
+          </div>
+
+          {/* Thumbnail Gallery */}
+          <div className="mt-10  overflow-x-auto">
+            <div className="flex gap-4 pb-2">
+              {mediaType === 'image' && project.images?.map((image, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentMediaIndex(index)}
+                  className={`relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden 
+                             transition-all duration-300 transform hover:scale-105 m-2
+                             ${currentMediaIndex === index ? 'ring-2 ring-[#9ABF80]' : ''}`}
+                >
+                  <img
+                    src={image}
+                    alt={`Thumbnail ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {currentMediaIndex === index && (
+                    <div className="absolute inset-0 bg-[#9ABF80]/20" />
+                  )}
+                </button>
+              ))}
+              {mediaType === 'video' && project.videos?.map((video, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentMediaIndex(index)}
+                  className={`relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden 
+                             bg-[#252525] transition-all duration-300 transform hover:scale-105
+                             ${currentMediaIndex === index ? 'ring-2 ring-[#9ABF80]' : ''}`}
+                >
+                  <video
+                    src={video}
+                    className="w-full h-full object-cover"
+                  />
+                  {currentMediaIndex === index && (
+                    <div className="absolute inset-0 bg-[#9ABF80]/20" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

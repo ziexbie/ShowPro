@@ -65,17 +65,27 @@ router.post('/authenticate', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        
-        const user = await Model.findOne({ email, password });
+        // Find user by email
+        const user = await Model.findOne({ email });
         
         if (!user) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        
+        // Check if user is admin
+        if (user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied. Admin access only.' });
+        }
+
+        // Compare passwords
+        if (user.password !== password) {  // Note: In production, use proper password hashing
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        // Create token
         const token = jwt.sign(
-            { userId: user._id, email: user.email },
-            'simplesecret',
+            { userId: user._id, role: user.role },
+            process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '24h' }
         );
 
@@ -84,7 +94,8 @@ router.post('/authenticate', async (req, res) => {
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
         });
     } catch (error) {

@@ -16,14 +16,14 @@ const Navbar = () => {
   const isActive = (path) => location.pathname === path;
 
   const navItems = [
-    { path: '/browse-projects', label: 'Browse', showAlways: true },
-    { path: '/categories', label: 'Categories', showAlways: true },
+    { path: '/browse-projects', label: 'Browse', requiresAuth: true },
+    { path: '/categories', label: 'Categories', requiresAuth: true },
     { path: '/add-project', label: 'Add Project', requiresAuth: true },
     { path: '/manage-projects', label: 'Manage', requiresAuth: true },
   ];
 
   return (
-    <nav className="bg-gradient-to-r from-[#1C325B] to-[#2A3F6C] border-b border-[#6A669D]/20">
+    <nav className="bg-gradient-to-r from-[#272727] to-[#2A3F6C] border-b border-[#6A669D]/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo Section */}
@@ -33,7 +33,7 @@ const Navbar = () => {
               className="text-[#E5E3D4] text-2xl font-bold tracking-tight hover:text-[#9ABF80] 
                        transition-colors duration-300"
             >
-              ShowPro
+              <img src="/images/digipodiumlogo.png" alt="Logo" className="h-12 w-12 mr-2 inline-block" />
             </Link>
           </div>
 

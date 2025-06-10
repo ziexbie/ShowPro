@@ -11,6 +11,7 @@ router.post('/add', async (req, res) => {
             area: req.body.area,
             githubLink: req.body.githubLink,
             liveLink: req.body.liveLink,
+            techStack: req.body.techStack,
             images: req.body.images,
             videos: req.body.videos
         };
@@ -63,6 +64,7 @@ router.put('/update/:id', async (req, res) => {
             area: req.body.area,
             githubLink: req.body.githubLink,
             liveLink: req.body.liveLink,
+            techStack: req.body.techStack,
             images: req.body.images,
             videos: req.body.videos
         };
