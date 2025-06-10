@@ -7,9 +7,14 @@ import { toast } from 'react-hot-toast';
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string()
-        .email('Invalid email')
-        .required('Email is required'),
+        .email('Please enter a valid email address')
+        .required('Email is required')
+        .matches(
+            /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/,
+            'Invalid email format'
+        ),
     password: Yup.string()
+        .min(8, 'Password must be at least 8 characters')
         .required('Password is required')
 });
 

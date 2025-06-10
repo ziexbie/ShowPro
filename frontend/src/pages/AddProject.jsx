@@ -3,6 +3,7 @@ import { Formik, Form, Field } from 'formik';
 import { FiUpload, FiX } from 'react-icons/fi';
 import * as Yup from 'yup';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
     title: Yup.string()
@@ -12,7 +13,9 @@ const validationSchema = Yup.object({
         .required('Description is required')
         .min(10, 'Description must be at least 10 characters'),
     type: Yup.string()
-        .required('Project type is required'),
+        .required('Project type is required')
+        .min(2, 'Project type must be at least 2 characters')
+        .max(50, 'Project type must be less than 50 characters'),
     area: Yup.string()
         .required('Project area is required'),
     githubLink: Yup.string()
@@ -270,21 +273,19 @@ const AddProject = () => {
                                 )}
                             </div>
 
-                            {/* Type Dropdown */}
+                            {/* Type Input */}
                             <div>
                                 <label className="block text-gray-100 text-sm font-semibold mb-2">
                                     Project Type
                                 </label>
                                 <Field
-                                    as="select"
                                     name="type"
                                     className="w-full px-4 py-2 rounded-lg border text-gray-300 bg-[#3e3e3e] focus:outline-none focus:border-[#A7D2CB]"
-                                >
-                                    <option value="">Select Type</option>
-                                    {projectTypes.map(type => (
-                                        <option key={type} value={type}>{type}</option>
-                                    ))}
-                                </Field>
+                                    placeholder="e.g., Web Development, Mobile App, UI/UX Design"
+                                />
+                                <p className="text-[#E5E3D4]/50 text-xs mt-1">
+                                    Common types: Web Development, Mobile App, UI/UX Design, Machine Learning, Data Science
+                                </p>
                                 {errors.type && touched.type && (
                                     <div className="text-red-500 text-sm mt-1">{errors.type}</div>
                                 )}

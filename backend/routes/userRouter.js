@@ -1,20 +1,20 @@
 const express = require('express');
+const router = express.Router();
 const Model = require('../model/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const router = express.Router();
-
 // Add role field to user registration route
-router.post('/add', (req, res) => {
-    new Model(req.body).save()
-        .then((result) => {
-            res.json(result);
-        }).catch((err) => {
-            console.error(err);
-            res.status(500).json(err);
-        });
+router.post('/add', async (req, res) => {
+    try {
+        const newUser = new Model(req.body);
+        const result = await newUser.save();
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json(err);
+    }
 });
 
 router.get('/getall', (req, res) => {
@@ -29,35 +29,56 @@ router.get('/getall', (req, res) => {
 
 })
 
-router.get('/getbyid/:id', (req, res) => {
-    Model.findById(req.params.id)
-        .then((result) => {
-            res.status(200).json(result);
-        }).catch((err) => {
-            res.status(500).json({ message: 'Internal Server Error' });
-            console.log(err);
-        });
-})
+router.get('/getbyid/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+        const result = await Model.findById(userId);
+        if (!result) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
-router.delete('/delete/:id', (req, res) => {
-    Model.findByIdAndDelete(req.params.id)
-        .then((result) => {
-            res.status(200).json(result);
-        }).catch((err) => {
-            res.status(500).json({ message: 'Internal Server Error' });
-            console.log(err);
-        });
-})
+router.delete('/delete/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+        const result = await Model.findByIdAndDelete(userId);
+        if (!result) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+});
 
 
-router.put('/update/:id', (req, res) => {
-    Model.findByIdAndUpdate(req.params.id, req.body, { new: true })
-        .then((result) => {
-            res.json(result);
-        }).catch((err) => {
-            console.error(err);
-            res.status(500).json(err);
-        });
+router.put('/update/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+        const result = await Model.findByIdAndUpdate(userId, req.body, { new: true });
+        if (!result) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.json(result);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 

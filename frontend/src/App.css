@@ -89,3 +89,21 @@
   background-color: transparent !important;
   color: #E5E3D4 !important;
 }
+
+/* Add to your global CSS file */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: #252525;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: rgba(106, 102, 157, 0.5);
+  border-radius: 3px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(106, 102, 157, 0.8);
+}

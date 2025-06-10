@@ -1,19 +1,18 @@
 const express = require('express');
-require('dotenv').config();
+const dotenv = require('dotenv');
 const path = require('path');
-const mongoose = require('./connection'); // This will execute the connection
+const cors = require('cors');
+const mongoose = require('./connection');
 const UserRouter = require('./routes/userRouter');
 const ProjectRouter = require('./routes/projectRouter');
-const dotenv = require('dotenv');
-const cors = require('cors');
 
-//creating new expess app
+// Configure dotenv
+dotenv.config();
 
 const app = express();
-
 const port = 5000;
 
-//middleware
+// Middleware
 app.use(cors({
     origin: '*',
     credentials: true
@@ -21,7 +20,8 @@ app.use(cors({
 app.use(express.json());
 app.use('/user', UserRouter);
 app.use('/project', ProjectRouter);
-// Add error handling middleware
+
+// Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
@@ -31,10 +31,10 @@ app.use((err, req, res, next) => {
     });
 });
 
-// Serve static files from uploads directory
-
-
-//routes or endpoints
+// Routes
+app.get('/health', (req, res) => {
+    res.json({ status: 'OK', mongodb: mongoose.connection.readyState });
+});
 
 app.get('/', (req, res) => {
        res.send('Hihihihih')
@@ -48,12 +48,13 @@ app.get('/getall', (req, res) => {
        res.send(' res from getall User router');
    });
 
-// Debug route to check if server is running
-app.get('/health', (req, res) => {
-    res.json({ status: 'OK', mongodb: mongoose.connection.readyState });
-});
+// Serve static files
+// app.use(express.static(path.join(__dirname, '../frontend/dist')));
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+// });
 
-// Only start server after DB connection is ready
+// Start server
 mongoose.connection.once('open', () => {
     app.listen(port, () => {
         console.log(`Server is running on http://localhost:${port}`);
